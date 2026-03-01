@@ -8,26 +8,22 @@
   const itineraryMaps = {};
   const itineraryLayers = {};
   const uiState = {
-    bend: { activityPage: 1, activityFilter: "", lodgingPage: 1 },
-    banff: { activityPage: 1, activityFilter: "", lodgingPage: 1 },
+    bend: { activityPage: 1, activityFilter: "", lodgingPage: 1, libraryTab: "activities", search: "" },
+    banff: { activityPage: 1, activityFilter: "", lodgingPage: 1, libraryTab: "activities", search: "" },
   };
 
-  const BP_DAY_KEY = "bp_active_day_v1";
-  let activeDayKey = null;
-
-  function getActiveDayKey() {
-    if (activeDayKey) return activeDayKey;
+  const BP_DAY_KEY_PREFIX = "bp_active_day_v2";
+  function getActiveDayKey(destId) {
     try {
-      const v = localStorage.getItem(BP_DAY_KEY);
-      if (v) return v;
-    } catch (e) {}
-    return null;
+      const v = localStorage.getItem(`${BP_DAY_KEY_PREFIX}_${destId}`);
+      return v || null;
+    } catch (e) {
+      return null;
+    }
   }
-
-  function setActiveDayKey(k) {
-    activeDayKey = k;
+  function setActiveDayKey(destId, k) {
     try {
-      localStorage.setItem(BP_DAY_KEY, k);
+      localStorage.setItem(`${BP_DAY_KEY_PREFIX}_${destId}`, k);
     } catch (e) {}
   }
 
@@ -39,31 +35,32 @@
     return keys;
   }
 
-  function renderDayRadio(dayKeys, destinations) {
-    const el = document.getElementById("bp-day-radio");
+  function renderDayRadio(destId, dayKeys, destinations) {
+    const el = document.getElementById("bp-day-radio-" + destId);
     if (!el) return;
     el.innerHTML = "";
     if (!dayKeys.length) {
       el.innerHTML = '<div class="text-muted">Set start/end dates to select a day.</div>';
       return;
     }
-    const current = getActiveDayKey() || dayKeys[0];
-    if (!getActiveDayKey()) setActiveDayKey(current);
+    const current = getActiveDayKey(destId) || dayKeys[0];
+    if (!getActiveDayKey(destId)) setActiveDayKey(destId, current);
     dayKeys.forEach((k) => {
-      const id = "bp-day-" + k;
+      const id = "bp-day-" + destId + "-" + k;
       const labelTxt = new Date(k + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
       const label = document.createElement("label");
       label.setAttribute("for", id);
       label.innerHTML = `
-        <input id="${escapeHtml(id)}" type="radio" name="bp-active-day" value="${escapeHtml(k)}" ${k === current ? "checked" : ""} />
+        <input id="${escapeHtml(id)}" type="radio" name="bp-active-day-${escapeHtml(destId)}" value="${escapeHtml(k)}" ${k === current ? "checked" : ""} />
         <span class="day-radio-text">
           <span class="day-radio-title">${escapeHtml(labelTxt)}</span>
           <span class="day-radio-sub">${escapeHtml(k)}</span>
         </span>
       `;
       label.querySelector("input")?.addEventListener("change", () => {
-        setActiveDayKey(k);
-        (destinations || []).forEach((d) => buildCalendar(d.id, d));
+        setActiveDayKey(destId, k);
+        const dest = (destinations || []).find((x) => x.id === destId);
+        if (dest) buildCalendar(destId, dest);
       });
       // Accept drops: move an item to this day (from whichever visible day)
       label.addEventListener("dragover", (e) => e.preventDefault());
@@ -76,7 +73,6 @@
         if (!json) return;
         try {
           const payload = JSON.parse(json);
-          const destId = (window.location.hash || "#bend").replace("#", "") || "bend";
           const it = getItinerary(destId);
           if (fromDate && fromSlot && fromIndex !== "" && it.days[fromDate] && Array.isArray(it.days[fromDate][fromSlot])) {
             const i = parseInt(fromIndex, 10);
@@ -86,12 +82,41 @@
           const slot = isFoodCategory(payload.category) ? "food" : "activities";
           (dayData[slot] || (dayData[slot] = [])).push(payload);
           setItinerary(destId, it);
-          setActiveDayKey(k);
+          setActiveDayKey(destId, k);
           const dest = (destinations || []).find((x) => x.id === destId);
           if (dest) buildCalendar(destId, dest);
         } catch (err) {}
       });
       el.appendChild(label);
+    });
+  }
+
+  function setLibraryTab(destId, tab) {
+    const st = uiState[destId] || uiState.bend;
+    st.libraryTab = tab === "lodging" ? "lodging" : "activities";
+    const btnA = document.getElementById("libtab-activities-" + destId);
+    const btnL = document.getElementById("libtab-lodging-" + destId);
+    const panelA = document.getElementById("libpanel-activities-" + destId);
+    const panelL = document.getElementById("libpanel-lodging-" + destId);
+    if (btnA) btnA.setAttribute("aria-selected", st.libraryTab === "activities" ? "true" : "false");
+    if (btnL) btnL.setAttribute("aria-selected", st.libraryTab === "lodging" ? "true" : "false");
+    if (panelA) st.libraryTab === "activities" ? panelA.removeAttribute("hidden") : panelA.setAttribute("hidden", "");
+    if (panelL) st.libraryTab === "lodging" ? panelL.removeAttribute("hidden") : panelL.setAttribute("hidden", "");
+  }
+
+  function initLibraryTabs() {
+    TAB_IDS.forEach((destId) => {
+      const btnA = document.getElementById("libtab-activities-" + destId);
+      const btnL = document.getElementById("libtab-lodging-" + destId);
+      if (btnA && !btnA.dataset.bound) {
+        btnA.dataset.bound = "1";
+        btnA.addEventListener("click", () => setLibraryTab(destId, "activities"));
+      }
+      if (btnL && !btnL.dataset.bound) {
+        btnL.dataset.bound = "1";
+        btnL.addEventListener("click", () => setLibraryTab(destId, "lodging"));
+      }
+      setLibraryTab(destId, (uiState[destId] || uiState.bend).libraryTab || "activities");
     });
   }
 
@@ -267,17 +292,18 @@
       return;
     }
     const isHistorical = !!weatherData.historical_reference;
-    const wrap = el.closest(".card");
-    let noteEl = wrap?.querySelector(".weather-note");
-    if (wrap) {
+    const weatherWrap = el.closest(".dest-summary-weather") || el.parentElement;
+    let noteEl = weatherWrap?.querySelector?.(".weather-note");
+    if (weatherWrap) {
       if (isHistorical && !noteEl) {
         noteEl = document.createElement("p");
         noteEl.className = "weather-note text-muted";
         noteEl.setAttribute("role", "status");
-        wrap.insertBefore(noteEl, wrap.querySelector(".weather-grid") || el);
+        weatherWrap.insertBefore(noteEl, el);
       }
       if (noteEl) {
-        noteEl.textContent = isHistorical ? "Typical weather (based on same dates last year — historical reference)" : "";
+        const year = weatherData.historical_year ? String(weatherData.historical_year) : "";
+        noteEl.textContent = isHistorical ? `Typical weather${year ? " (" + year + ")" : ""} — historical reference` : "";
         noteEl.style.display = isHistorical ? "block" : "none";
       }
     }
@@ -344,17 +370,160 @@
     return out;
   }
 
+  async function stagingAdd(destination, item) {
+    const res = await fetch("/api/bachelor-party/staging/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ destination, item }),
+    });
+    const out = await res.json();
+    if (!res.ok) throw new Error(out.error || "Staging add failed");
+    return out;
+  }
+
+  async function stagingRemove(destination, staging_id) {
+    const res = await fetch("/api/bachelor-party/staging/remove", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ destination, staging_id }),
+    });
+    const out = await res.json();
+    if (!res.ok) throw new Error(out.error || "Staging remove failed");
+    return out;
+  }
+
+  async function stagingVote(destination, staging_id) {
+    const res = await fetch("/api/bachelor-party/staging/vote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ destination, staging_id }),
+    });
+    const out = await res.json();
+    if (!res.ok) throw new Error(out.error || "Vote failed");
+    return out;
+  }
+
+  function itemKindFromPayload(p) {
+    if (!p || typeof p !== "object") return "activity";
+    if (typeof p.category === "string") return "activity";
+    if (typeof p.type === "string" || p.ballpark || p.nightly_cost) return "lodging";
+    return "activity";
+  }
+
+  function stagingIdFor(kind, id) {
+    return `${kind}:${id || ""}`;
+  }
+
+  function renderStaging(dest) {
+    const listEl = document.getElementById("staging-list-" + dest.id);
+    if (!listEl) return;
+    const items = Array.isArray(dest.staging) ? dest.staging : [];
+    const sorted = [...items].sort((a, b) => {
+      const av = Number(a.votes || 0);
+      const bv = Number(b.votes || 0);
+      if (bv !== av) return bv - av;
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    });
+    listEl.innerHTML = "";
+    sorted.forEach((it) => {
+      const kind = (it.kind || itemKindFromPayload(it)).toLowerCase();
+      const staging_id = it.staging_id || stagingIdFor(kind, it.id);
+      const li = document.createElement("li");
+      li.className = "activity-chip shortlist-tile";
+      li.draggable = true;
+      li.dataset.kind = kind;
+      li.dataset.json = JSON.stringify(it.item || it);
+      li.dataset.stagingId = staging_id;
+
+      const linkPart = it.url ? safeLink(it.url, it.name) : escapeHtml(it.name);
+      const pill = kind === "lodging" ? (it.type || "Lodging") : (it.category || "Activity");
+      const votes = Number(it.votes || 0);
+      const voted = !!it.voted_by_me;
+
+      li.innerHTML = `
+        <div class="lib-pill">${escapeHtml(pill)}</div>
+        <div class="lib-name">${linkPart}</div>
+        ${it.notes ? `<div class="lib-desc">${escapeHtml(it.notes)}</div>` : ""}
+        <div class="item-actions" style="margin-top:0.35rem;">
+          <button type="button" class="vote-btn" aria-pressed="${voted ? "true" : "false"}" aria-label="Upvote">
+            ▲ <span class="vote-count">${votes}</span>
+          </button>
+          <button type="button" class="item-remove" aria-label="Remove from shortlist">×</button>
+        </div>
+      `;
+
+      li.querySelector(".item-remove")?.addEventListener("click", async (e) => {
+        e.preventDefault();
+        await stagingRemove(dest.id, staging_id);
+        data = await fetch("/api/bachelor-party").then((r) => r.json());
+        const d = (data.destinations || []).find((x) => x.id === dest.id);
+        if (d) renderStaging(d);
+      });
+
+      li.querySelector(".vote-btn")?.addEventListener("click", async (e) => {
+        e.preventDefault();
+        await stagingVote(dest.id, staging_id);
+        data = await fetch("/api/bachelor-party").then((r) => r.json());
+        const d = (data.destinations || []).find((x) => x.id === dest.id);
+        if (d) renderStaging(d);
+      });
+
+      li.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("application/json", li.dataset.json || "{}");
+        e.dataTransfer.effectAllowed = "copy";
+        li.classList.add("dragging");
+      });
+      li.addEventListener("dragend", () => li.classList.remove("dragging"));
+
+      listEl.appendChild(li);
+    });
+  }
+
+  function setupStagingDrop(destId) {
+    const dropEl = document.getElementById("staging-drop-" + destId);
+    if (!dropEl || dropEl.dataset.bound) return;
+    dropEl.dataset.bound = "1";
+    dropEl.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropEl.classList.add("drag-over");
+    });
+    dropEl.addEventListener("dragleave", () => dropEl.classList.remove("drag-over"));
+    dropEl.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      dropEl.classList.remove("drag-over");
+      const json = e.dataTransfer.getData("application/json");
+      if (!json) return;
+      try {
+        const payload = JSON.parse(json);
+        const kind = itemKindFromPayload(payload);
+        const toStage = { ...payload, kind };
+        await stagingAdd(destId, toStage);
+        data = await fetch("/api/bachelor-party").then((r) => r.json());
+        const d = (data.destinations || []).find((x) => x.id === destId);
+        if (d) renderStaging(d);
+      } catch (err) {}
+    });
+  }
+
   function renderActivities(dest) {
     const listEl = document.getElementById("activities-list-" + dest.id);
     const filterEl = document.getElementById("filter-" + dest.id);
+    const searchEl = document.getElementById("search-" + dest.id);
     const pagerEl = document.getElementById("pager-activities-" + dest.id);
     if (!listEl) return;
 
     const st = uiState[dest.id] || uiState.bend;
     const all = getActivitiesForDest(dest);
-    const category = (filterEl?.value || st.activityFilter || "").trim();
+    const category = ((filterEl ? filterEl.value : st.activityFilter) || "").trim();
     st.activityFilter = category;
-    const filtered = all.filter((a) => !category || a.category === category);
+    const q = ((searchEl ? searchEl.value : st.search) || "").trim().toLowerCase();
+    st.search = q;
+    const filtered = all.filter((a) => {
+      if (category && a.category !== category) return false;
+      if (!q) return true;
+      const hay = `${a.name || ""} ${a.notes || ""} ${a.category || ""}`.toLowerCase();
+      return hay.includes(q);
+    });
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     if (st.activityPage > totalPages) st.activityPage = totalPages;
     const pageItems = filtered.slice((st.activityPage - 1) * PAGE_SIZE, st.activityPage * PAGE_SIZE);
@@ -368,11 +537,27 @@
       li.dataset.json = JSON.stringify(a);
       const linkPart = a.url ? safeLink(a.url, a.name) : escapeHtml(a.name);
       li.innerHTML = `
-        <span class="act-category">${escapeHtml(a.category || "")}</span>
-        ${linkPart}
-        ${a.notes ? `<span class="act-notes">— ${escapeHtml(a.notes)}</span>` : ""}
-        <span class="item-actions"><button type="button" class="item-remove" aria-label="Remove from library">×</button></span>
+        <div class="lib-row">
+          <div class="lib-row-main">
+            <div class="lib-pill">${escapeHtml(a.category || "Activity")}</div>
+            <div class="lib-name">${linkPart}</div>
+            ${a.notes ? `<div class="lib-desc">${escapeHtml(a.notes)}</div>` : ""}
+          </div>
+          <span class="item-actions">
+            <button type="button" class="stage-btn" aria-label="Add to staging">Stage</button>
+            <button type="button" class="item-remove" aria-label="Remove from library">×</button>
+          </span>
+        </div>
       `;
+      li.querySelector(".stage-btn")?.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+          await stagingAdd(dest.id, { ...a, kind: "activity" });
+          data = await fetch("/api/bachelor-party").then((r) => r.json());
+          const d = (data.destinations || []).find((x) => x.id === dest.id);
+          if (d) renderStaging(d);
+        } catch (err) {}
+      });
       li.querySelector(".item-remove")?.addEventListener("click", async (e) => {
         e.preventDefault();
         await removeFromLibrary(dest.id, "activity", a.id);
@@ -397,6 +582,14 @@
       filterEl.dataset.bound = "1";
       filterEl.addEventListener("change", () => {
         st.activityPage = 1;
+        st.activityFilter = filterEl.value;
+        renderActivities(dest);
+      });
+    }
+    if (searchEl && !searchEl.dataset.bound) {
+      searchEl.dataset.bound = "1";
+      searchEl.addEventListener("input", () => {
+        st.activityPage = 1;
         renderActivities(dest);
       });
     }
@@ -404,14 +597,22 @@
 
   function renderStay(dest) {
     const el = document.getElementById(dest.id === "banff" ? "stay-list-banff" : "stay-bend");
+    const searchEl = document.getElementById("search-" + dest.id);
     const pagerEl = document.getElementById("pager-lodging-" + dest.id);
     if (!el) return;
 
     const st = uiState[dest.id] || uiState.bend;
     const all = getLodgingForDest(dest);
-    const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+    const q = ((searchEl ? searchEl.value : st.search) || "").trim().toLowerCase();
+    st.search = q;
+    const filtered = all.filter((s) => {
+      if (!q) return true;
+      const hay = `${s.name || ""} ${s.notes || ""} ${s.type || ""} ${s.ballpark || ""}`.toLowerCase();
+      return hay.includes(q);
+    });
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     if (st.lodgingPage > totalPages) st.lodgingPage = totalPages;
-    const pageItems = all.slice((st.lodgingPage - 1) * PAGE_SIZE, st.lodgingPage * PAGE_SIZE);
+    const pageItems = filtered.slice((st.lodgingPage - 1) * PAGE_SIZE, st.lodgingPage * PAGE_SIZE);
 
     el.innerHTML = "";
     pageItems.forEach((s) => {
@@ -422,11 +623,29 @@
       div.dataset.json = JSON.stringify(s);
       const linkPart = s.url ? safeLink(s.url, s.name) : escapeHtml(s.name);
       div.innerHTML = `
-        <div class="stay-type">${linkPart}</div>
-        <div class="stay-suggestion">${escapeHtml(s.type || "")}${s.notes ? " — " + escapeHtml(s.notes) : ""}</div>
-        ${s.ballpark ? `<div class="stay-ballpark">${escapeHtml(s.ballpark)}</div>` : ""}
-        <span class="item-actions"><button type="button" class="item-remove" aria-label="Remove from library">×</button></span>
+        <div class="lib-row">
+          <div class="lib-row-main">
+            <div class="lib-pill">${escapeHtml(s.type || "Lodging")}</div>
+            <div class="lib-name">${linkPart}</div>
+            ${(s.notes || s.ballpark)
+              ? `<div class="lib-desc">${escapeHtml(s.notes || "")}${s.ballpark ? (s.notes ? " · " : "") + escapeHtml(s.ballpark) : ""}</div>`
+              : ""}
+          </div>
+          <span class="item-actions">
+            <button type="button" class="stage-btn" aria-label="Add to staging">Stage</button>
+            <button type="button" class="item-remove" aria-label="Remove from library">×</button>
+          </span>
+        </div>
       `;
+      div.querySelector(".stage-btn")?.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+          await stagingAdd(dest.id, { ...s, kind: "lodging" });
+          data = await fetch("/api/bachelor-party").then((r) => r.json());
+          const d = (data.destinations || []).find((x) => x.id === dest.id);
+          if (d) renderStaging(d);
+        } catch (err) {}
+      });
       div.querySelector(".item-remove")?.addEventListener("click", async (e) => {
         e.preventDefault();
         await removeFromLibrary(dest.id, "lodging", s.id);
@@ -447,6 +666,14 @@
       st.lodgingPage = p;
       renderStay(dest);
     });
+
+    if (searchEl && !searchEl.dataset.bound_lodging) {
+      searchEl.dataset.bound_lodging = "1";
+      searchEl.addEventListener("input", () => {
+        st.lodgingPage = 1;
+        renderStay(dest);
+      });
+    }
   }
 
   function setupTripLodgingDrop(el, destId, dest) {
@@ -530,8 +757,8 @@
 
     const dayKeys = [];
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) dayKeys.push(dateToKey(new Date(d)));
-    const active = getActiveDayKey() || dayKeys[0];
-    if (active) setActiveDayKey(active);
+    const active = getActiveDayKey(destId) || dayKeys[0];
+    if (active) setActiveDayKey(destId, active);
 
     dayKeys.filter((k) => k === active).forEach((key) => {
       const dateStr = new Date(key + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
@@ -620,7 +847,7 @@
     const map = itineraryMaps[destId];
     itineraryLayers[destId].clearLayers();
     const bounds = [];
-    const active = getActiveDayKey();
+    const active = getActiveDayKey(destId);
 
     if (it.tripLodging && it.tripLodging.lat != null && it.tripLodging.lng != null) {
       const m = L.circleMarker([it.tripLodging.lat, it.tripLodging.lng], { radius: 10, fillColor: "#ffffff", color: "#000", weight: 1, fillOpacity: 0.85 }).addTo(itineraryLayers[destId]);
@@ -663,7 +890,7 @@
     const summaryEl = document.getElementById("bp-route-summary-" + destId);
     const mode = (modeEl?.value || "walking").trim();
     const it = getItinerary(destId);
-    const active = getActiveDayKey();
+    const active = getActiveDayKey(destId);
     if (!active) {
       if (summaryEl) summaryEl.textContent = "Pick a day first.";
       return;
@@ -855,11 +1082,13 @@ ${dayKeys.map(k=>{
         renderOverview(dest);
         renderActivities(dest);
         renderStay(dest);
+        renderStaging(dest);
+        setupStagingDrop(dest.id);
         buildCalendar(dest.id, dest);
       });
 
       // Day picker
-      renderDayRadio(getDayKeysFromDates(), destinations);
+      destinations.forEach((dest) => renderDayRadio(dest.id, getDayKeysFromDates(), destinations));
       destinations.forEach((dest) => {
         document.getElementById("bp-route-draw-" + dest.id)?.addEventListener("click", () => drawRouteForDest(dest.id));
         document.getElementById("bp-route-clear-" + dest.id)?.addEventListener("click", () => clearRouteForDest(dest.id));
@@ -869,10 +1098,12 @@ ${dayKeys.map(k=>{
       async function refreshWeatherAndCalendar() {
         syncEndDateMin();
         const { start, end } = getTripDates();
-        renderDayRadio(getDayKeysFromDates(), destinations);
+        destinations.forEach((dest) => renderDayRadio(dest.id, getDayKeysFromDates(), destinations));
         for (const dest of destinations) {
           const w = await fetchWeatherForDates(dest.id, start, end);
           renderWeather(dest.id, w);
+          renderStaging(dest);
+          setupStagingDrop(dest.id);
           buildCalendar(dest.id, dest);
         }
       }
@@ -897,6 +1128,7 @@ ${dayKeys.map(k=>{
       renderWeather("bend", bendW);
       renderWeather("banff", banffW);
 
+      initLibraryTabs();
       initTabs();
       initAddToLibrary();
     } catch (e) {

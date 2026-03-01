@@ -220,6 +220,9 @@ def normalize_bachelor_party_data(data: dict, persist: bool = False) -> dict:
     for dest in destinations:
         if not isinstance(dest, dict):
             continue
+        if "staging" not in dest or not isinstance(dest.get("staging"), list):
+            dest["staging"] = []
+            changed = True
         for key, kind in (("compendium_activities", "activity"), ("compendium_lodging", "lodging")):
             if key not in dest or not isinstance(dest.get(key), list):
                 dest[key] = []
@@ -245,6 +248,46 @@ def normalize_bachelor_party_data(data: dict, persist: bool = False) -> dict:
                 else:
                     item.setdefault("type", "Other")
                     item.setdefault("ballpark", "")
+
+        # Normalize staging items
+        normalized_staging = []
+        for it in dest.get("staging", []):
+            if not isinstance(it, dict):
+                continue
+            kind = (it.get("kind") or "").strip().lower()
+            if kind not in ("activity", "lodging"):
+                # infer
+                kind = "activity" if isinstance(it.get("category"), str) else "lodging" if isinstance(it.get("type"), str) else "activity"
+            if not it.get("id"):
+                it["id"] = new_item_id()
+                changed = True
+            staging_id = it.get("staging_id") or f"{kind}:{it.get('id')}"
+            if staging_id != it.get("staging_id"):
+                it["staging_id"] = staging_id
+                changed = True
+            it["kind"] = kind
+            if "name" in it and isinstance(it["name"], str):
+                it["name"] = html_lib.unescape(it["name"]).strip()[:120]
+            if "notes" in it and isinstance(it["notes"], str):
+                it["notes"] = html_lib.unescape(it["notes"]).strip()[:400]
+            it.setdefault("votes", 0)
+            if not isinstance(it.get("votes"), int):
+                try:
+                    it["votes"] = int(it.get("votes") or 0)
+                    changed = True
+                except Exception:
+                    it["votes"] = 0
+                    changed = True
+            it.setdefault("voters", [])
+            if not isinstance(it.get("voters"), list):
+                it["voters"] = []
+                changed = True
+            # don't persist voted_by_me (computed per-request)
+            it.pop("voted_by_me", None)
+            normalized_staging.append(it)
+        if normalized_staging != dest.get("staging"):
+            dest["staging"] = normalized_staging
+            changed = True
     if changed and persist:
         save_bachelor_party(data)
     return data
@@ -253,12 +296,7 @@ def normalize_bachelor_party_data(data: dict, persist: bool = False) -> dict:
 def fetch_page_metadata(url: str):
     """Fetch URL and extract basic metadata. Returns (final_url, title, description, verified)."""
     try:
-        resp = requests.get(
-            url,
-            timeout=8,
-            headers={"User-Agent": "Mozilla/5.0 (compatible; TripPlanner/1.0)"},
-            allow_redirects=True,
-        )
+        resp = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0 (compatible; TripPlanner/1.0)"}, allow_redirects=True)
         resp.raise_for_status()
         final_url = resp.url
         text = resp.text
@@ -291,6 +329,87 @@ def fetch_page_metadata(url: str):
         return final_url, title, desc, verified
     except Exception:
         return None, None, None, False
+
+
+def extract_lat_lng_from_html(html: str) -> tuple[float, float] | None:
+    """Best-effort extraction of coordinates from a page's HTML.
+
+    Notes:
+    - Many lodging sites (including Airbnb) intentionally avoid exposing exact addresses.
+      When coordinates are present, they are often approximate.
+    """
+    if not html:
+        return None
+
+    def to_float(s: str) -> float | None:
+        try:
+            return float(s)
+        except Exception:
+            return None
+
+    def valid(lat: float | None, lng: float | None) -> tuple[float, float] | None:
+        if lat is None or lng is None:
+            return None
+        if not (-90 <= lat <= 90 and -180 <= lng <= 180):
+            return None
+        return float(lat), float(lng)
+
+    # Meta tags used by some sites
+    meta_lat = re.search(r'property=["\']place:location:latitude["\']\s+content=["\']([^"\']+)["\']', html, re.I)
+    meta_lng = re.search(r'property=["\']place:location:longitude["\']\s+content=["\']([^"\']+)["\']', html, re.I)
+    if meta_lat and meta_lng:
+        out = valid(to_float(meta_lat.group(1)), to_float(meta_lng.group(1)))
+        if out:
+            return out
+
+    meta_lat = re.search(r'property=["\']og:latitude["\']\s+content=["\']([^"\']+)["\']', html, re.I)
+    meta_lng = re.search(r'property=["\']og:longitude["\']\s+content=["\']([^"\']+)["\']', html, re.I)
+    if meta_lat and meta_lng:
+        out = valid(to_float(meta_lat.group(1)), to_float(meta_lng.group(1)))
+        if out:
+            return out
+
+    # JSON-LD GeoCoordinates
+    m = re.search(r'"@type"\s*:\s*"GeoCoordinates"[\s\S]{0,1200}?"latitude"\s*:\s*([-]?\d{1,2}\.\d+)[\s\S]{0,200}?"longitude"\s*:\s*([-]?\d{1,3}\.\d+)', html, re.I)
+    if m:
+        out = valid(to_float(m.group(1)), to_float(m.group(2)))
+        if out:
+            return out
+
+    # Common inline state shapes: "lat": 44.0, "lng": -121.3  (Airbnb-like)
+    m = re.search(r'(?i)"lat"\s*:\s*([-]?\d{1,2}\.\d+)[\s\S]{0,120}?"lng"\s*:\s*([-]?\d{1,3}\.\d+)', html)
+    if m:
+        out = valid(to_float(m.group(1)), to_float(m.group(2)))
+        if out:
+            return out
+
+    m = re.search(r'(?i)"latitude"\s*:\s*([-]?\d{1,2}\.\d+)[\s\S]{0,120}?"longitude"\s*:\s*([-]?\d{1,3}\.\d+)', html)
+    if m:
+        out = valid(to_float(m.group(1)), to_float(m.group(2)))
+        if out:
+            return out
+
+    return None
+
+
+def geocode_best_effort(query: str) -> tuple[float, float] | None:
+    q = (query or "").strip()
+    if not q:
+        return None
+    try:
+        resp = requests.get(
+            "https://nominatim.openstreetmap.org/search",
+            params={"q": q, "format": "json", "limit": 1},
+            timeout=10,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; TripPlanner/1.0)"},
+        )
+        resp.raise_for_status()
+        raw = resp.json()
+        if raw:
+            return float(raw[0].get("lat")), float(raw[0].get("lon"))
+    except Exception:
+        return None
+    return None
 
 
 def auto_activity_category(url: str, title: str | None, desc: str | None) -> str:
@@ -413,7 +532,157 @@ def api_weather():
 
 @app.route("/api/bachelor-party")
 def api_bachelor_party():
-    return jsonify(load_bachelor_party())
+    data = load_bachelor_party()
+    # Mark which staging items this browser has voted for (best-effort via cookie-backed session)
+    try:
+        uid = session.get("bp_user_id")
+        if not uid:
+            session["bp_user_id"] = secrets.token_urlsafe(12)
+            session.permanent = True
+            uid = session.get("bp_user_id")
+        for dest in data.get("destinations", []) if isinstance(data, dict) else []:
+            if not isinstance(dest, dict):
+                continue
+            for it in dest.get("staging", []) if isinstance(dest.get("staging"), list) else []:
+                if isinstance(it, dict):
+                    voters = it.get("voters") if isinstance(it.get("voters"), list) else []
+                    it["voted_by_me"] = bool(uid and uid in voters)
+    except Exception:
+        pass
+    return jsonify(data)
+
+
+@app.route("/api/bachelor-party/staging/add", methods=["POST"])
+def api_bachelor_party_staging_add():
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+    body = request.get_json() or {}
+    dest_id = (body.get("destination") or "").strip().lower()
+    item = body.get("item") or {}
+    if dest_id not in ("bend", "banff"):
+        return jsonify({"error": "destination must be 'bend' or 'banff'"}), 400
+    if not isinstance(item, dict):
+        return jsonify({"error": "item must be an object"}), 400
+
+    kind = (item.get("kind") or "").strip().lower()
+    if kind not in ("activity", "lodging"):
+        kind = "activity" if isinstance(item.get("category"), str) else "lodging" if isinstance(item.get("type"), str) else "activity"
+
+    url = (item.get("url") or "").strip()
+    if url and (not url.startswith("https://") or not is_safe_public_hostname(urlparse(url).hostname or "")):
+        url = ""
+
+    data = load_bachelor_party()
+    dest = next((d for d in data.get("destinations", []) if d.get("id") == dest_id), None)
+    if not dest:
+        return jsonify({"error": "Unknown destination"}), 404
+
+    sid = f"{kind}:{(item.get('id') or '').strip()}"
+    if not sid or sid.endswith(":"):
+        # If no stable ID, generate one
+        item_id = new_item_id()
+        sid = f"{kind}:{item_id}"
+    else:
+        item_id = sid.split(":", 1)[1]
+
+    # Deduplicate by staging_id
+    existing = [x for x in dest.get("staging", []) if isinstance(x, dict) and x.get("staging_id") == sid]
+    if existing:
+        return jsonify({"ok": True, "staging_id": sid}), 200
+
+    staged = {
+        "staging_id": sid,
+        "id": item_id,
+        "kind": kind,
+        "name": (html_lib.unescape((item.get("name") or "").strip()) or (urlparse(url).netloc if url else "Suggestion")).strip()[:120],
+        "url": url,
+        "notes": html_lib.unescape((item.get("notes") or "").strip())[:400],
+        "lat": item.get("lat"),
+        "lng": item.get("lng"),
+        "category": (item.get("category") or "").strip()[:60] if kind == "activity" else None,
+        "type": (item.get("type") or "").strip()[:60] if kind == "lodging" else None,
+        "ballpark": (item.get("ballpark") or "").strip()[:60] if kind == "lodging" else "",
+        "votes": 0,
+        "voters": [],
+    }
+    # Clean None keys
+    if staged.get("category") is None:
+        staged.pop("category", None)
+    if staged.get("type") is None:
+        staged.pop("type", None)
+
+    dest.setdefault("staging", []).append(staged)
+    save_bachelor_party(data)
+    return jsonify({"ok": True, "staging_id": sid}), 201
+
+
+@app.route("/api/bachelor-party/staging/remove", methods=["POST"])
+def api_bachelor_party_staging_remove():
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+    body = request.get_json() or {}
+    dest_id = (body.get("destination") or "").strip().lower()
+    staging_id = (body.get("staging_id") or "").strip()
+    if dest_id not in ("bend", "banff"):
+        return jsonify({"error": "destination must be 'bend' or 'banff'"}), 400
+    if not staging_id:
+        return jsonify({"error": "staging_id is required"}), 400
+    data = load_bachelor_party()
+    dest = next((d for d in data.get("destinations", []) if d.get("id") == dest_id), None)
+    if not dest:
+        return jsonify({"error": "Unknown destination"}), 404
+    before = len(dest.get("staging", [])) if isinstance(dest.get("staging"), list) else 0
+    dest["staging"] = [x for x in (dest.get("staging", []) or []) if not (isinstance(x, dict) and x.get("staging_id") == staging_id)]
+    if len(dest["staging"]) == before:
+        return jsonify({"error": "Item not found"}), 404
+    save_bachelor_party(data)
+    return jsonify({"ok": True}), 200
+
+
+@app.route("/api/bachelor-party/staging/vote", methods=["POST"])
+def api_bachelor_party_staging_vote():
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+    body = request.get_json() or {}
+    dest_id = (body.get("destination") or "").strip().lower()
+    staging_id = (body.get("staging_id") or "").strip()
+    if dest_id not in ("bend", "banff"):
+        return jsonify({"error": "destination must be 'bend' or 'banff'"}), 400
+    if not staging_id:
+        return jsonify({"error": "staging_id is required"}), 400
+
+    uid = session.get("bp_user_id")
+    if not uid:
+        session["bp_user_id"] = secrets.token_urlsafe(12)
+        session.permanent = True
+        uid = session.get("bp_user_id")
+
+    data = load_bachelor_party()
+    dest = next((d for d in data.get("destinations", []) if d.get("id") == dest_id), None)
+    if not dest:
+        return jsonify({"error": "Unknown destination"}), 404
+    items = dest.get("staging", [])
+    if not isinstance(items, list):
+        return jsonify({"error": "Staging is invalid"}), 500
+    it = next((x for x in items if isinstance(x, dict) and x.get("staging_id") == staging_id), None)
+    if not it:
+        return jsonify({"error": "Item not found"}), 404
+    voters = it.get("voters")
+    if not isinstance(voters, list):
+        voters = []
+        it["voters"] = voters
+
+    if uid in voters:
+        voters.remove(uid)
+        it["votes"] = max(0, int(it.get("votes") or 0) - 1)
+        voted = False
+    else:
+        voters.append(uid)
+        it["votes"] = int(it.get("votes") or 0) + 1
+        voted = True
+
+    save_bachelor_party(data)
+    return jsonify({"ok": True, "votes": it["votes"], "voted_by_me": voted}), 200
 
 
 @app.route("/api/lisbon-hotels")
@@ -802,7 +1071,29 @@ def api_bachelor_party_add():
     name = (name_override or title or (urlparse(final_url).netloc or parsed.netloc).replace("www.", "")).strip()
     notes = (description or "Added from link").strip()[:400]
 
-    lat, lng = dest.get("lat"), dest.get("lng")
+    # Try to place pins based on the URL itself (best-effort), then fall back to destination center.
+    lat, lng = None, None
+    try:
+        resp = requests.get(
+            final_url,
+            timeout=10,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; TripPlanner/1.0)"},
+            allow_redirects=True,
+        )
+        if resp.ok and "text/html" in ((resp.headers.get("Content-Type") or "").lower()) and resp.text and len(resp.text) <= 800_000:
+            coords = extract_lat_lng_from_html(resp.text)
+            if coords:
+                lat, lng = coords
+    except Exception:
+        pass
+    if lat is None or lng is None:
+        # Geocode by name + destination as a soft fallback
+        q = f"{name}, {dest.get('name') or dest_id}"
+        coords = geocode_best_effort(q)
+        if coords:
+            lat, lng = coords
+    if lat is None or lng is None:
+        lat, lng = dest.get("lat"), dest.get("lng")
 
     if kind == "activity":
         key = "compendium_activities"

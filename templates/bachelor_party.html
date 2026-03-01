@@ -35,11 +35,6 @@
       <p id="trip-dates-desc" class="text-muted date-selector-desc">Weather and calendar use these dates. Pick a weekend or longer.</p>
     </section>
 
-    <section class="card day-picker-section" aria-label="Choose day">
-      <h2 class="visually-hidden">Day picker</h2>
-      <div id="bp-day-radio" class="day-radio day-radio--compact day-radio--under-weather" role="radiogroup" aria-label="Select a day to view"></div>
-    </section>
-
     <div class="tabs-wrap" role="tablist" aria-label="Destination">
       <button type="button" role="tab" id="tab-bend" aria-selected="true" aria-controls="panel-bend" class="tab-btn">Bend, Oregon</button>
       <button type="button" role="tab" id="tab-banff" aria-selected="false" aria-controls="panel-banff" class="tab-btn">Banff, Alberta</button>
@@ -47,14 +42,33 @@
 
     <div id="panel-bend" role="tabpanel" aria-labelledby="tab-bend" class="tab-panel" data-dest="bend">
       <div class="panel-content">
-        <section class="card dest-overview" aria-labelledby="overview-bend">
-          <h2 id="overview-bend" class="dest-name">Bend, Oregon</h2>
-          <p class="dest-tagline" id="tagline-bend"></p>
-          <dl class="at-a-glance" id="glance-bend"></dl>
+        <section class="card dest-summary" aria-labelledby="overview-bend">
+          <div class="dest-summary-grid">
+            <div class="dest-summary-main">
+              <h2 id="overview-bend" class="dest-name">Bend, Oregon</h2>
+              <p class="dest-tagline" id="tagline-bend"></p>
+              <dl class="at-a-glance" id="glance-bend"></dl>
+            </div>
+            <div class="dest-summary-weather" aria-labelledby="weather-bp-bend">
+              <h3 id="weather-bp-bend" class="dest-weather-title">Weather</h3>
+              <div id="weather-bend" class="weather-grid weather-grid--mini" role="list"></div>
+            </div>
+          </div>
         </section>
-        <section class="card" aria-labelledby="weather-bp-bend">
-          <h2 id="weather-bp-bend">Weather</h2>
-          <div id="weather-bend" class="weather-grid" role="list"></div>
+        <section class="card day-picker-section" aria-label="Choose day for Bend">
+          <h2 class="visually-hidden">Day picker</h2>
+          <div id="bp-day-radio-bend" class="day-radio day-radio--compact day-radio--under-weather" role="radiogroup" aria-label="Select a day to view (Bend)"></div>
+        </section>
+
+        <section class="card staging-section staging-section--table" aria-labelledby="staging-heading-bend">
+          <div class="staging-head">
+            <h2 id="staging-heading-bend">Shortlist</h2>
+            <div class="text-muted staging-sub">Highest votes float to the front. Drag into a day plan.</div>
+          </div>
+          <div id="staging-drop-bend" class="staging-drop staging-drop--inline" data-dest="bend" aria-label="Shortlist drop zone for Bend">
+            <div class="text-muted">Drop here</div>
+          </div>
+          <ul id="staging-list-bend" class="staging-list staging-list--table" aria-label="Shortlisted items for Bend"></ul>
         </section>
         <section class="map-schedule-row" aria-label="Map and schedule">
           <section class="card calendar-section" aria-labelledby="calendar-heading-bend">
@@ -87,9 +101,18 @@
           </section>
         </section>
 
-        <section class="compendium-row" aria-label="Library">
+        <section class="library-row" aria-label="Library">
           <section class="card compendium-section" aria-labelledby="compendium-bend">
-            <h2 id="compendium-bend">Compendium</h2>
+            <div class="lib-head">
+              <h2 id="compendium-bend">Library</h2>
+              <label for="search-bend" class="visually-hidden">Search library</label>
+              <input id="search-bend" class="lib-search" type="search" placeholder="Search…" autocomplete="off" />
+            </div>
+            <div class="lib-tabs" role="tablist" aria-label="Compendium type (Bend)">
+              <button type="button" class="lib-tab-btn" id="libtab-activities-bend" data-dest="bend" data-tab="activities" aria-selected="true">Activities</button>
+              <button type="button" class="lib-tab-btn" id="libtab-lodging-bend" data-dest="bend" data-tab="lodging" aria-selected="false">Lodging</button>
+            </div>
+            <div id="libpanel-activities-bend" class="lib-panel" data-dest="bend" data-tab="activities">
             <div class="filter-wrap">
               <label for="filter-bend" class="filter-label">Filter</label>
               <select id="filter-bend" class="filter-select" aria-label="Filter by category">
@@ -107,12 +130,14 @@
             </div>
             <ul id="activities-list-bend" class="activities-list compendium-list" aria-label="Drag activities into day plan"></ul>
             <div id="pager-activities-bend" class="pager" aria-label="Activities pagination"></div>
+            </div>
+            <div id="libpanel-lodging-bend" class="lib-panel" data-dest="bend" data-tab="lodging" hidden>
+              <p class="text-muted" style="margin-top:-0.25rem;">Drag one into the trip lodging box.</p>
+              <div id="stay-bend" class="stay-list compendium-lodging" aria-label="Drag lodging into trip lodging"></div>
+              <div id="pager-lodging-bend" class="pager" aria-label="Lodging pagination"></div>
+            </div>
           </section>
-          <section class="card" aria-labelledby="stay-heading-bend">
-            <h2 id="stay-heading-bend">Lodging</h2>
-            <div id="stay-bend" class="stay-list compendium-lodging" aria-label="Drag lodging into trip lodging"></div>
-            <div id="pager-lodging-bend" class="pager" aria-label="Lodging pagination"></div>
-          </section>
+
           <section class="card add-to-library-section" aria-labelledby="add-library-heading-bend">
             <h2 id="add-library-heading-bend">Add</h2>
             <form id="add-library-form-bend" class="add-library-form" data-dest="bend" aria-label="Add link to library">
@@ -156,14 +181,33 @@
 
     <div id="panel-banff" role="tabpanel" aria-labelledby="tab-banff" class="tab-panel" data-dest="banff" hidden>
       <div class="panel-content">
-        <section class="card dest-overview" aria-labelledby="overview-banff">
-          <h2 id="overview-banff" class="dest-name">Banff, Alberta, Canada</h2>
-          <p class="dest-tagline" id="tagline-banff"></p>
-          <dl class="at-a-glance" id="glance-banff"></dl>
+        <section class="card dest-summary" aria-labelledby="overview-banff">
+          <div class="dest-summary-grid">
+            <div class="dest-summary-main">
+              <h2 id="overview-banff" class="dest-name">Banff, Alberta, Canada</h2>
+              <p class="dest-tagline" id="tagline-banff"></p>
+              <dl class="at-a-glance" id="glance-banff"></dl>
+            </div>
+            <div class="dest-summary-weather" aria-labelledby="weather-bp-banff">
+              <h3 id="weather-bp-banff" class="dest-weather-title">Weather</h3>
+              <div id="weather-banff" class="weather-grid weather-grid--mini" role="list"></div>
+            </div>
+          </div>
         </section>
-        <section class="card" aria-labelledby="weather-bp-banff">
-          <h2 id="weather-bp-banff">Weather</h2>
-          <div id="weather-banff" class="weather-grid" role="list"></div>
+        <section class="card day-picker-section" aria-label="Choose day for Banff">
+          <h2 class="visually-hidden">Day picker</h2>
+          <div id="bp-day-radio-banff" class="day-radio day-radio--compact day-radio--under-weather" role="radiogroup" aria-label="Select a day to view (Banff)"></div>
+        </section>
+
+        <section class="card staging-section staging-section--table" aria-labelledby="staging-heading-banff">
+          <div class="staging-head">
+            <h2 id="staging-heading-banff">Shortlist</h2>
+            <div class="text-muted staging-sub">Highest votes float to the front. Drag into a day plan.</div>
+          </div>
+          <div id="staging-drop-banff" class="staging-drop staging-drop--inline" data-dest="banff" aria-label="Shortlist drop zone for Banff">
+            <div class="text-muted">Drop here</div>
+          </div>
+          <ul id="staging-list-banff" class="staging-list staging-list--table" aria-label="Shortlisted items for Banff"></ul>
         </section>
         <section class="map-schedule-row" aria-label="Map and schedule">
           <section class="card calendar-section" aria-labelledby="calendar-heading-banff">
@@ -196,9 +240,18 @@
           </section>
         </section>
 
-        <section class="compendium-row" aria-label="Library">
+        <section class="library-row" aria-label="Library">
           <section class="card compendium-section" aria-labelledby="compendium-banff">
-            <h2 id="compendium-banff">Compendium</h2>
+            <div class="lib-head">
+              <h2 id="compendium-banff">Library</h2>
+              <label for="search-banff" class="visually-hidden">Search library</label>
+              <input id="search-banff" class="lib-search" type="search" placeholder="Search…" autocomplete="off" />
+            </div>
+            <div class="lib-tabs" role="tablist" aria-label="Compendium type (Banff)">
+              <button type="button" class="lib-tab-btn" id="libtab-activities-banff" data-dest="banff" data-tab="activities" aria-selected="true">Activities</button>
+              <button type="button" class="lib-tab-btn" id="libtab-lodging-banff" data-dest="banff" data-tab="lodging" aria-selected="false">Lodging</button>
+            </div>
+            <div id="libpanel-activities-banff" class="lib-panel" data-dest="banff" data-tab="activities">
             <div class="filter-wrap">
               <label for="filter-banff" class="filter-label">Filter</label>
               <select id="filter-banff" class="filter-select" aria-label="Filter by category">
@@ -215,12 +268,14 @@
             </div>
             <ul id="activities-list-banff" class="activities-list compendium-list"></ul>
             <div id="pager-activities-banff" class="pager" aria-label="Activities pagination"></div>
+            </div>
+            <div id="libpanel-lodging-banff" class="lib-panel" data-dest="banff" data-tab="lodging" hidden>
+              <p class="text-muted" style="margin-top:-0.25rem;">Drag one into the trip lodging box.</p>
+              <div id="stay-list-banff" class="stay-list compendium-lodging"></div>
+              <div id="pager-lodging-banff" class="pager" aria-label="Lodging pagination"></div>
+            </div>
           </section>
-          <section class="card" aria-labelledby="stay-heading-banff">
-            <h2 id="stay-heading-banff">Lodging</h2>
-            <div id="stay-list-banff" class="stay-list compendium-lodging"></div>
-            <div id="pager-lodging-banff" class="pager" aria-label="Lodging pagination"></div>
-          </section>
+
           <section class="card add-to-library-section" aria-labelledby="add-library-heading-banff">
             <h2 id="add-library-heading-banff">Add</h2>
             <form id="add-library-form-banff" class="add-library-form" data-dest="banff" aria-label="Add link to library">

@@ -11,11 +11,23 @@
       "best_season": "Summer (June–Sept) for hiking & river; winter for skiing",
       "flight_notes": "Fly into RDM (Redmond) or PDX (Portland ~3h drive)",
       "vibe": "Craft beer, hiking, river floats, relaxed",
-      "compendium_activities": [],
+      "compendium_activities": [
+        {
+          "id": "9y7H38B-lq4",
+          "name": "Dear Irene I Modern Dining Experience & Curated Bar in Bend, OR",
+          "category": "Drink",
+          "notes": "Dear Irene in Downtown Bend, Oregon, offers an unforgettable dining experience that's made for delight, discovery, and indulgence.",
+          "url": "https://dearirenebend.com/",
+          "lat": 44.0582,
+          "lng": -121.3153,
+          "verified": true
+        }
+      ],
       "compendium_lodging": [],
       "activities": [],
       "stay": [],
-      "budget_notes": "Flights vary by origin. Lodging $150–300/person/night for group house. Activities $50–150/day. Food/drinks $80–120/day."
+      "budget_notes": "Flights vary by origin. Lodging $150–300/person/night for group house. Activities $50–150/day. Food/drinks $80–120/day.",
+      "staging": []
     },
     {
       "id": "banff",
@@ -83,24 +95,6 @@
           "id": "iO8XSyOJ12k"
         },
         {
-          "name": "Park Distillery Restaurant & Bar",
-          "category": "Restaurant",
-          "notes": "Distillery and dining",
-          "url": "https://www.banfflakelouise.com/dining",
-          "lat": 51.1784,
-          "lng": -115.5708,
-          "id": "xZiA_Rn7Wgg"
-        },
-        {
-          "name": "The Bison Restaurant",
-          "category": "Restaurant",
-          "notes": "Canadian cuisine, terrace",
-          "url": "https://www.banfflakelouise.com/dining",
-          "lat": 51.1784,
-          "lng": -115.5708,
-          "id": "_0QvjfIFwzI"
-        },
-        {
           "name": "Wild Bill's / Banff Ave nightlife",
           "category": "Drink",
           "notes": "Bars, live music, St. James's Gate",
@@ -128,10 +122,23 @@
           "id": "plqwnw_IJUs"
         }
       ],
-      "compendium_lodging": [],
+      "compendium_lodging": [
+        {
+          "id": "XqQQifSSZ3Y",
+          "name": "Mountain View -> Private HotTub",
+          "type": "Airbnb",
+          "notes": "Added from link",
+          "url": "https://www.airbnb.com/rooms/1184415613133385851?adults=8&check_in=2026-07-09&check_out=2026-07-12&search_mode=regular_search&photo_id=1940546284&source_impression_id=p3_1772337386_P3nxpsleXGqe8dl6&previous_page_section_name=1000&federated_search_id=59464e86-23e3-498c-8935-01be111f4c50",
+          "ballpark": "",
+          "lat": 51.1784,
+          "lng": -115.5708,
+          "verified": false
+        }
+      ],
       "activities": [],
       "stay": [],
-      "budget_notes": "Flights to YYC. Lodging $200–400/person/night. Parks pass required. Activities $50–200/day. Food/drinks $90–140/day (CAD)."
+      "budget_notes": "Flights to YYC. Lodging $200–400/person/night. Parks pass required. Activities $50–200/day. Food/drinks $90–140/day (CAD).",
+      "staging": []
     }
   ]
 }
