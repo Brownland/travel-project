@@ -1,0 +1,879 @@
+:root {
+  --bg: #0f1419;
+  --surface: #1a2332;
+  --surface2: #243044;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --accent: #58a6ff;
+  --accent-soft: rgba(88, 166, 255, 0.15);
+  --warm: #f0c674;
+  --green: #7ee787;
+  --border: #30363d;
+  --radius: 12px;
+  --font: "Segoe UI", system-ui, sans-serif;
+  --min-touch: 44px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface2);
+  color: var(--accent);
+  font-weight: 600;
+  border-radius: var(--radius);
+  z-index: 100;
+  min-height: var(--min-touch);
+  display: inline-flex;
+  align-items: center;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 0.75rem;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.6;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+@media (max-width: 600px) {
+  body { font-size: 0.9375rem; }
+}
+
+.header {
+  padding: 2rem 1.5rem;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1260px;
+  margin: 0 auto;
+}
+
+.nav-dashboards {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.nav-dashboards .nav-link {
+  color: var(--accent);
+  text-decoration: none;
+  padding: 0.25rem 0;
+  min-height: var(--min-touch);
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-dashboards .nav-link:hover,
+.nav-dashboards .nav-link:focus {
+  text-decoration: underline;
+  outline: none;
+}
+
+.nav-dashboards .nav-link--current {
+  color: var(--text-muted);
+  cursor: default;
+  text-decoration: none;
+}
+
+.nav-dashboards .nav-sep {
+  color: var(--border);
+  margin: 0 0.35rem;
+}
+
+.header h1 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .main { padding: 1rem; gap: 1.25rem; }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+}
+
+.card h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--warm);
+}
+
+.schedule-header-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.base-hotel {
+  margin: 0.25rem 0 0.9rem 0;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+}
+.base-hotel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.55rem;
+}
+.base-hotel-title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+.base-hotel-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.base-hotel-url {
+  flex: 1 1 340px;
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  min-height: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+.base-hotel-url:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.base-hotel-set,
+.base-hotel-clear {
+  font: inherit;
+  padding: 0.5rem 0.7rem;
+  min-height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--surface2);
+  color: var(--text);
+}
+.base-hotel-clear {
+  background: transparent;
+  color: var(--text-muted);
+}
+.base-hotel-details {
+  margin-top: 0.55rem;
+  font-size: 0.9rem;
+}
+
+.trip-toggle {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: center;
+  color: var(--text);
+  font-weight: 600;
+  user-select: none;
+}
+.trip-toggle input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green);
+}
+
+.card:focus-within { outline: none; }
+.card h2:focus { outline: none; }
+
+/* Flights */
+.flights-confirmation {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.flights-confirmation strong { color: var(--text); }
+.flights-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.flight-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  min-height: var(--min-touch);
+}
+.flight-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+.flight-route {
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 0.25rem;
+}
+.flight-meta {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+.flight-times {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.weather-day {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  min-height: var(--min-touch);
+  text-align: center;
+  border: 1px solid var(--border);
+  transition: border-color 0.15s ease;
+}
+.weather-day:focus-within { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.weather-day .date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.weather-day .temp {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.weather-day .desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.weather-day .precip {
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-top: 0.25rem;
+}
+
+.weather-note {
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  margin-left: 0.4rem;
+}
+
+.map {
+  height: 420px;
+  min-height: 280px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface2);
+}
+@media (max-width: 600px) {
+  .map { height: 320px; min-height: 240px; }
+}
+
+.map--tall {
+  height: 680px;
+  min-height: 420px;
+}
+@media (max-width: 900px) {
+  .map--tall { height: 420px; min-height: 280px; }
+}
+
+.map-hint {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.map-schedule-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .map-schedule-row { grid-template-columns: 1fr; }
+}
+
+.schedule-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.schedule-hint {
+  margin: -0.25rem 0 1rem 0;
+  font-size: 0.9rem;
+}
+
+.day-header {
+  cursor: pointer;
+}
+
+.day-header:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.activity {
+  cursor: pointer;
+}
+
+.activity:focus-within,
+.activity:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Hotel picker */
+.hotel-picker-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+.hotel-select {
+  flex: 1 1 320px;
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  min-height: var(--min-touch);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+.hotel-select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.hotel-pin-btn,
+.hotel-clear-btn {
+  font: inherit;
+  padding: 0.6rem 0.9rem;
+  min-height: var(--min-touch);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+.hotel-pin-btn {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: transparent;
+  font-weight: 700;
+}
+.hotel-pin-btn:hover { filter: brightness(1.08); }
+.hotel-clear-btn {
+  background: var(--surface2);
+  color: var(--text);
+}
+.hotel-details {
+  margin-top: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Map controls */
+.map-controls {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0 0 0.75rem 0;
+}
+.map-controls-sep {
+  color: var(--border);
+}
+.route-btn {
+  font: inherit;
+  padding: 0.5rem 0.7rem;
+  min-height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--surface2);
+  color: var(--text);
+}
+.route-btn:hover { filter: brightness(1.06); }
+.route-btn--secondary {
+  background: transparent;
+  color: var(--text-muted);
+}
+.route-summary {
+  margin: -0.25rem 0 0.75rem 0;
+  font-size: 0.9rem;
+}
+.day-select {
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+  min-height: var(--min-touch);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+.day-select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.day-header--active {
+  background: rgba(126, 231, 135, 0.08);
+  border: 1px solid rgba(126, 231, 135, 0.35);
+}
+
+.schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.day-radio {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.65rem 0 0 0;
+}
+
+.day-radio label {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.5rem 0.65rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: var(--min-touch);
+}
+
+.day-radio input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+  flex: 0 0 auto;
+}
+
+.day-radio .day-radio-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.day-radio .day-radio-title {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.day-radio .day-radio-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.day-radio--compact {
+  font-size: 0.9rem;
+}
+
+.day-radio--compact label {
+  min-height: 40px;
+}
+
+.day-radio--under-weather {
+  margin-top: 0.15rem;
+}
+
+.day-picker-section {
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+.day-block {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  transition: border-color 0.15s ease;
+}
+.day-block:focus-within { border-color: var(--accent); }
+
+.day-block--collapsed .activities,
+.day-block--collapsed .add-activity {
+  display: none;
+}
+
+.day-block .day-header {
+  font-weight: 600;
+  color: var(--warm);
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.activity {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+}
+
+.activity:last-child {
+  margin-bottom: 0;
+}
+
+.activity .time {
+  flex-shrink: 0;
+  width: 3.5rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.activity-actions {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.activity-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+  font-size: 16px;
+}
+.activity-remove:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.20); }
+.activity-remove:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.activity.drop-before { box-shadow: inset 0 3px 0 rgba(88, 166, 255, 0.85); }
+.activity.drop-after { box-shadow: inset 0 -3px 0 rgba(88, 166, 255, 0.85); }
+
+.schedule-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: -0.15rem 0 0.75rem 0;
+}
+
+.restaurant-finder {
+  margin: 0 0 1rem 0;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+}
+.restaurant-finder-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.rest-mode {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.92rem;
+  user-select: none;
+}
+.rest-mode input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--green);
+}
+.rest-results {
+  margin-top: 0.65rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.rest-links {
+  margin-top: 0.25rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+.rest-links a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(88, 166, 255, 0.5);
+  text-underline-offset: 2px;
+}
+.rest-links a:hover,
+.rest-links a:focus {
+  text-decoration-color: var(--accent);
+}
+.rest-pager {
+  margin-top: 0.65rem;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.rest-pager .pager-btn {
+  font: inherit;
+  padding: 0.45rem 0.65rem;
+  min-height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  cursor: pointer;
+}
+.rest-pager .pager-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.rest-pager .pager-status {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.rest-result {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.rest-result-title {
+  font-weight: 700;
+  color: var(--text);
+}
+.rest-result-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+.rest-result-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.activity .details .name {
+  font-weight: 500;
+}
+
+.activity .details .name a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: rgba(88, 166, 255, 0.45);
+  text-underline-offset: 2px;
+}
+.activity .details .name a:hover,
+.activity .details .name a:focus {
+  text-decoration-color: var(--accent);
+}
+
+.activity--done .details .name,
+.activity--done .details .name a {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.activity-meta {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+.activity-check {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+}
+.activity[draggable="true"] {
+  cursor: grab;
+}
+.activity[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.add-activity {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+  display: grid;
+  gap: 0.6rem;
+}
+.add-activity-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.6rem;
+}
+.add-activity label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.add-activity input {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  min-height: var(--min-touch);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+.add-activity input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.add-activity-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.add-activity button {
+  font: inherit;
+  padding: 0.55rem 0.85rem;
+  min-height: var(--min-touch);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--text);
+}
+.add-activity button.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.activity .details .notes {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.hotels {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hotel-card {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  min-height: var(--min-touch);
+  border: 1px solid var(--border);
+}
+
+.hotel-card .city {
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 0.25rem;
+}
+
+.hotel-card .area {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.hotel-card .suggestions {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+/* Leaflet overrides for dark theme */
+.leaflet-popup-content-wrapper {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.leaflet-popup-tip {
+  background: var(--surface);
+}
+
+.leaflet-tooltip.pin-label {
+  background: rgba(15, 20, 25, 0.88);
+  border: 1px solid rgba(48, 54, 61, 0.9);
+  color: var(--text);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 0.25rem 0.45rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+.leaflet-tooltip.pin-label::before {
+  border-top-color: rgba(48, 54, 61, 0.9);
+}

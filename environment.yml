@@ -1,0 +1,13 @@
+# Conda environment for Portugal Trip Planner
+# Create: conda env create -f environment.yml
+# Activate: conda activate portugal-trip-planner
+name: portugal-trip-planner
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.13
+  - pip
+  - pip:
+    - flask>=3.0.0
+    - requests>=2.31.0

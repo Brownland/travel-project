@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portugal Trip Planner — Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <h1>Portugal Trip Planner</h1>
+      <p class="subtitle">Password required</p>
+    </div>
+  </header>
+
+  <main id="main" class="main" role="main">
+    <section class="card" aria-labelledby="login-heading">
+      <h2 id="login-heading">Enter password</h2>
+      {% if error %}
+        <p class="text-muted" role="alert">{{ error }}</p>
+      {% endif %}
+      <form method="post" action="{{ url_for('portugal_login') }}">
+        <input type="hidden" name="next" value="{{ next_url or '/' }}" />
+        <div class="add-activity-row">
+          <label for="pw">Password</label>
+          <input id="pw" name="password" type="password" autocomplete="current-password" required />
+        </div>
+        <div class="add-activity-actions">
+          <button class="primary" type="submit">Unlock</button>
+          <a class="nav-link" href="/bachelor-party">Go to bachelor party</a>
+        </div>
+      </form>
+      <p class="text-muted" style="margin-top: 0.75rem;">This device will stay unlocked via a cookie.</p>
+    </section>
+  </main>
+</body>
+</html>
+

@@ -1,0 +1,21 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# virtualenvs
+.venv/
+venv/
+ENV/
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# secrets / local state
+.env
+data/flask_secret_key.txt
+

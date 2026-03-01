@@ -1,0 +1,75 @@
+{
+  "hotels": [
+    {
+      "id": "hotel-do-chiado",
+      "name": "Hotel do Chiado",
+      "area": "Chiado / Baixa",
+      "price_tier": "Midrange",
+      "url": "https://www.hoteldochiado.pt/en/",
+      "lat": 38.7106514,
+      "lng": -9.1394100,
+      "notes": "Very central (Baixa/Chiado). Easy for Alfama + Baixa walking days."
+    },
+    {
+      "id": "corpo-santo",
+      "name": "Corpo Santo Lisbon Historical Hotel",
+      "area": "Cais do Sodré / Ribeira",
+      "price_tier": "Luxury",
+      "url": "https://www.corposantohotel.com/en/",
+      "lat": 38.70731,
+      "lng": -9.14223,
+      "notes": "Great base for waterfront and Baixa; short rides to Alfama."
+    },
+    {
+      "id": "memmo-alfama",
+      "name": "Memmo Alfama",
+      "area": "Alfama",
+      "price_tier": "Boutique",
+      "url": "https://www.memmohotels.com/alfama/",
+      "lat": 38.71021,
+      "lng": -9.130698,
+      "notes": "Right in Alfama—ideal if you want to start/finish days near viewpoints."
+    },
+    {
+      "id": "the-lumiares",
+      "name": "The Lumiares Hotel & Spa",
+      "area": "Bairro Alto / Chiado",
+      "price_tier": "Luxury",
+      "url": "https://www.thelumiares.com/",
+      "lat": 38.7138614,
+      "lng": -9.1444497,
+      "notes": "Great nightlife proximity; easy access to Baixa/Chiado."
+    },
+    {
+      "id": "altis-avenida",
+      "name": "Altis Avenida Hotel",
+      "area": "Restauradores / Rossio",
+      "price_tier": "Luxury",
+      "url": "https://www.altishotels.com/en/altis-avenida-hotel/",
+      "lat": 38.7149453,
+      "lng": -9.1406947,
+      "notes": "Extremely central transit hub; easiest for day trips (Sintra trains via Rossio)."
+    },
+    {
+      "id": "lisboa-pessoa",
+      "name": "Lisboa Pessoa Hotel",
+      "area": "Chiado",
+      "price_tier": "Midrange",
+      "url": "https://www.artsoulgroup.com/lisboapessoahotel/en/",
+      "lat": 38.712512,
+      "lng": -9.141448,
+      "notes": "Central, walkable base between Baixa and Bairro Alto."
+    },
+    {
+      "id": "my-story-tejo",
+      "name": "My Story Hotel Tejo",
+      "area": "Baixa",
+      "price_tier": "Budget/Mid",
+      "url": "https://www.mystoryhotels.com/en/my-story-hotel-tejo/",
+      "lat": 38.71354345,
+      "lng": -9.13654247,
+      "notes": "Good-value central option near Rossio/Baixa."
+    }
+  ]
+}
+

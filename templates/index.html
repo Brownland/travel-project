@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portugal Trip Planner — May 16–24</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <header class="header header--with-nav" role="banner">
+    <div class="header-inner">
+      <h1>Portugal Trip Planner</h1>
+      <p class="subtitle" id="trip-dates">May 16–24, 2026 — Itinerary, map & weather</p>
+      <nav class="nav-dashboards" aria-label="Trip dashboards">
+        <span class="nav-link nav-link--current">Portugal trip</span>
+        <span class="nav-sep" aria-hidden="true">·</span>
+        <a href="/bachelor-party" class="nav-link">Bachelor party</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main" role="main">
+    <section class="flights-section card" aria-labelledby="flights-heading">
+      <h2 id="flights-heading">Flights</h2>
+      <div id="flights" class="flights"></div>
+    </section>
+
+    <section class="weather-section card" aria-labelledby="weather-heading">
+      <h2 id="weather-heading">Weather <span id="weather-note" class="weather-note" aria-live="polite"></span></h2>
+      <div id="weather-grid" class="weather-grid" role="list"></div>
+    </section>
+
+    <section class="day-picker-section card" aria-label="Choose day">
+      <h2 class="visually-hidden">Day picker</h2>
+      <div id="day-radio" class="day-radio day-radio--compact day-radio--under-weather" role="radiogroup" aria-label="Select a day to view"></div>
+    </section>
+
+    <section class="map-schedule-row" aria-label="Map and schedule">
+      <section class="map-section card" aria-labelledby="map-heading">
+        <h2 id="map-heading">Map</h2>
+        <div class="map-controls">
+          <label for="day-select" class="text-muted">Day filter</label>
+          <select id="day-select" class="day-select" aria-label="Filter map by day">
+            <option value="">All days</option>
+          </select>
+          <span class="map-controls-sep" aria-hidden="true">·</span>
+          <label for="route-mode" class="text-muted">Route</label>
+          <select id="route-mode" class="day-select" aria-label="Route mode">
+            <option value="walking">Walk</option>
+            <option value="driving">Drive</option>
+            <option value="cycling">Bike</option>
+          </select>
+          <button type="button" id="route-draw" class="route-btn">Draw route</button>
+          <button type="button" id="route-clear" class="route-btn route-btn--secondary">Clear</button>
+        </div>
+        <div id="route-summary" class="route-summary text-muted" aria-live="polite"></div>
+        <div id="map" class="map map--tall" aria-label="Map of Portugal with trip locations"></div>
+        <p class="map-hint">Click a day to filter pins; click again to show all.</p>
+      </section>
+
+      <section class="schedule-col" aria-label="Schedule column">
+        <section class="schedule-section card" aria-labelledby="schedule-heading">
+          <div class="schedule-header-row">
+            <h2 id="schedule-heading">Day-by-day schedule</h2>
+            <label class="trip-toggle">
+              <input type="checkbox" id="trip-mode" />
+              We’re on the trip
+            </label>
+          </div>
+          <div class="base-hotel">
+            <div class="base-hotel-head">
+              <div class="base-hotel-title">Base hotel (applies to all days)</div>
+              <button type="button" id="base-hotel-clear" class="base-hotel-clear">Clear</button>
+            </div>
+            <div class="base-hotel-row">
+              <label for="base-hotel-url" class="visually-hidden">Hotel URL</label>
+              <input id="base-hotel-url" class="base-hotel-url" placeholder="Paste hotel URL (https://…)" />
+              <button type="button" id="base-hotel-set" class="base-hotel-set">Set</button>
+            </div>
+            <div id="base-hotel-details" class="base-hotel-details text-muted" aria-live="polite"></div>
+          </div>
+          <div class="schedule-actions">
+            <button type="button" id="export-pdf" class="route-btn">Export PDF</button>
+          </div>
+          <p class="text-muted schedule-hint">Tip: click an activity to jump to its pin.</p>
+          <p class="text-muted schedule-hint">Edit tip: drag activities to reorder or move between days. Add restaurants/activities per day.</p>
+          <div class="restaurant-finder" aria-label="Restaurant finder">
+            <div class="restaurant-finder-head">
+              <div class="base-hotel-title">Restaurant finder</div>
+            </div>
+            <div class="restaurant-finder-row">
+              <label for="rest-q" class="visually-hidden">Search restaurants</label>
+              <input id="rest-q" class="base-hotel-url" placeholder="Search: e.g., seafood, pastel de nata, tasting menu…" />
+              <button type="button" id="rest-search" class="base-hotel-set">Search</button>
+            </div>
+            <div class="restaurant-finder-row">
+              <label class="rest-mode"><input type="radio" name="rest-mode" value="day" checked /> Near today’s activities</label>
+              <label class="rest-mode"><input type="radio" name="rest-mode" value="pin" /> Near map pin</label>
+              <button type="button" id="rest-drop-pin" class="base-hotel-clear">Drop pin</button>
+              <label for="rest-radius" class="text-muted">Radius</label>
+              <select id="rest-radius" class="day-select" aria-label="Restaurant search radius">
+                <option value="800">10 min walk (~0.5 mi)</option>
+                <option value="1200">15 min walk (~0.75 mi)</option>
+                <option value="1600" selected>1 mile</option>
+                <option value="3200">2 miles</option>
+              </select>
+            </div>
+            <div id="rest-hint" class="text-muted" style="margin-top:0.4rem;"></div>
+            <div id="rest-results" class="rest-results" aria-live="polite"></div>
+            <div id="rest-pager" class="rest-pager" aria-label="Restaurant results pagination"></div>
+          </div>
+          <div id="schedule" class="schedule"></div>
+        </section>
+
+        <section class="hotel-picker card" aria-labelledby="hotel-picker-heading">
+          <h2 id="hotel-picker-heading">Choose a Lisbon hotel</h2>
+          <p class="text-muted">Pick a hotel and we’ll pin it on the map. This list is focused around Baixa/Chiado/Alfama for your current plan.</p>
+          <div class="hotel-picker-row">
+            <label for="hotel-select" class="visually-hidden">Hotel</label>
+            <select id="hotel-select" class="hotel-select" aria-label="Select a Lisbon hotel"></select>
+            <button type="button" id="hotel-pin-btn" class="hotel-pin-btn">Pin on map</button>
+            <button type="button" id="hotel-clear-btn" class="hotel-clear-btn">Clear</button>
+          </div>
+          <div id="hotel-details" class="hotel-details" aria-live="polite"></div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

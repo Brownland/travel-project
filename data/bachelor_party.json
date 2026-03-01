@@ -1,0 +1,137 @@
+{
+  "title": "Patrick's Bachelor Party",
+  "destinations": [
+    {
+      "id": "bend",
+      "name": "Bend, Oregon",
+      "tagline": "Beer, outdoors, and mountain vibes",
+      "lat": 44.0582,
+      "lng": -121.3153,
+      "timezone": "America/Los_Angeles",
+      "best_season": "Summer (June–Sept) for hiking & river; winter for skiing",
+      "flight_notes": "Fly into RDM (Redmond) or PDX (Portland ~3h drive)",
+      "vibe": "Craft beer, hiking, river floats, relaxed",
+      "compendium_activities": [],
+      "compendium_lodging": [],
+      "activities": [],
+      "stay": [],
+      "budget_notes": "Flights vary by origin. Lodging $150–300/person/night for group house. Activities $50–150/day. Food/drinks $80–120/day."
+    },
+    {
+      "id": "banff",
+      "name": "Banff, Alberta, Canada",
+      "tagline": "Canadian Rockies, lakes, and adventure",
+      "lat": 51.1784,
+      "lng": -115.5708,
+      "timezone": "America/Edmonton",
+      "best_season": "Summer (June–Aug) for hiking & lakes; winter for skiing",
+      "flight_notes": "Fly into YYC (Calgary), ~1.5h drive to Banff",
+      "vibe": "Mountains, lakes, hiking, ski town, international",
+      "compendium_activities": [
+        {
+          "name": "Lake Louise & Moraine Lake",
+          "category": "Outdoor",
+          "notes": "Shuttle or early drive; iconic views",
+          "url": "https://www.pc.gc.ca/en/pn-np/ab/banff/visit",
+          "lat": 51.4254,
+          "lng": -116.1773,
+          "id": "dfSRie0b8_Y"
+        },
+        {
+          "name": "Johnston Canyon",
+          "category": "Outdoor",
+          "notes": "Waterfall hike; ice walk in winter",
+          "url": "https://www.pc.gc.ca/en/pn-np/ab/banff/visit",
+          "lat": 51.2406,
+          "lng": -115.8411,
+          "id": "a6pX1v_X-C4"
+        },
+        {
+          "name": "Sunshine Village / Lake Louise Ski",
+          "category": "Outdoor",
+          "notes": "World-class skiing",
+          "url": "https://www.skibanff.com/",
+          "lat": 51.115,
+          "lng": -115.7817,
+          "id": "pjLpBRv2LDM"
+        },
+        {
+          "name": "Banff Centre Sally Borden Climbing Gym",
+          "category": "Climbing",
+          "notes": "Indoor bouldering, top rope, lead",
+          "url": "https://www.banffcentre.ca/sally-borden/climbing-gym",
+          "lat": 51.1784,
+          "lng": -115.5708,
+          "id": "V3oD0IiWdlU"
+        },
+        {
+          "name": "Eureka Escape Rooms Banff",
+          "category": "Escape room",
+          "notes": "Marv's Diner, Warden's Cabin; 2–8 people",
+          "url": "https://eurekabanff.com/",
+          "lat": 51.1784,
+          "lng": -115.5708,
+          "id": "Ru_bcc56pnU"
+        },
+        {
+          "name": "Banff Hot Springs",
+          "category": "Relax",
+          "notes": "Historic hot springs, year-round",
+          "url": "https://www.pc.gc.ca/en/pn-np/ab/banff/visit",
+          "lat": 51.1633,
+          "lng": -115.5506,
+          "id": "iO8XSyOJ12k"
+        },
+        {
+          "name": "Park Distillery Restaurant & Bar",
+          "category": "Restaurant",
+          "notes": "Distillery and dining",
+          "url": "https://www.banfflakelouise.com/dining",
+          "lat": 51.1784,
+          "lng": -115.5708,
+          "id": "xZiA_Rn7Wgg"
+        },
+        {
+          "name": "The Bison Restaurant",
+          "category": "Restaurant",
+          "notes": "Canadian cuisine, terrace",
+          "url": "https://www.banfflakelouise.com/dining",
+          "lat": 51.1784,
+          "lng": -115.5708,
+          "id": "_0QvjfIFwzI"
+        },
+        {
+          "name": "Wild Bill's / Banff Ave nightlife",
+          "category": "Drink",
+          "notes": "Bars, live music, St. James's Gate",
+          "url": "https://www.banfflakelouise.com/restaurants-bars",
+          "lat": 51.1784,
+          "lng": -115.5708,
+          "id": "LT2UAbHpt-Q"
+        },
+        {
+          "name": "Whitewater Rafting Kicking Horse",
+          "category": "Outdoor",
+          "notes": "Full-day raft trips",
+          "url": "https://www.banffadventures.com/",
+          "lat": 51.1784,
+          "lng": -115.5708,
+          "id": "XeOC47SqM9c"
+        },
+        {
+          "name": "Banff Gondola",
+          "category": "Outdoor",
+          "notes": "Sulphur Mountain views",
+          "url": "https://www.banffjaspercollection.com/attractions/banff-gondola/",
+          "lat": 51.1489,
+          "lng": -115.5592,
+          "id": "plqwnw_IJUs"
+        }
+      ],
+      "compendium_lodging": [],
+      "activities": [],
+      "stay": [],
+      "budget_notes": "Flights to YYC. Lodging $200–400/person/night. Parks pass required. Activities $50–200/day. Food/drinks $90–140/day (CAD)."
+    }
+  ]
+}

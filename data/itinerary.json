@@ -1,0 +1,153 @@
+{
+  "trip": {
+    "name": "Portugal May Trip",
+    "start_date": "2026-05-15",
+    "end_date": "2026-05-24"
+  },
+  "flights": {
+    "confirmation": "AUG6N4",
+    "outbound": {
+      "route": "New York (JFK) → Lisbon (LIS)",
+      "date": "2026-05-15",
+      "departure_time": "22:05",
+      "arrival_time": "10:15",
+      "arrival_date": "2026-05-16",
+      "duration": "7h 10m",
+      "airline": "TAP Portugal",
+      "flight_number": "TP 210",
+      "airports": "JFK → LIS",
+      "class": "Economy",
+      "nonstop": true
+    },
+    "return": {
+      "route": "Lisbon (LIS) → New York (JFK)",
+      "date": "2026-05-24",
+      "departure_time": "17:00",
+      "arrival_time": "20:05",
+      "duration": "8h 5m",
+      "airline": "TAP Portugal",
+      "flight_number": "TP 209",
+      "airports": "LIS → JFK",
+      "class": "Economy",
+      "nonstop": true
+    }
+  },
+  "days": [
+    {
+      "date": "2026-05-15",
+      "city": "Travel",
+      "activities": [
+        {"name": "Fly New York (JFK) → Lisbon (LIS)", "time": "22:05", "notes": "Overnight flight (TAP TP 210)."}
+      ]
+    },
+    {
+      "date": "2026-05-16",
+      "city": "Lisbon",
+      "activities": [
+        {"name": "Arrive Lisbon (LIS)", "time": "10:15", "lat": 38.7742, "lng": -9.1342, "notes": "Customs + bags + SIM/ATM can take 30–75 min."},
+        {"name": "Transit to lodging + drop bags", "time": "11:30", "lat": 38.7109, "lng": -9.1396, "notes": "Aim to avoid packing too much into arrival day."},
+        {"name": "Lunch (easy, nearby)", "time": "13:00", "lat": 38.7109, "lng": -9.1396, "notes": "Keep it simple; hydrate and get outside."},
+        {"name": "Jetlag reset: nap / shower / light stroll", "time": "15:00", "lat": 38.7109, "lng": -9.1396, "notes": "Best practice: 60–90 min max nap, then sunlight."},
+        {"name": "Dinner (reservation-friendly)", "time": "19:00", "lat": 38.7109, "lng": -9.1396, "notes": "If you’re wiped, do a casual spot and call it early."}
+      ]
+    },
+    {
+      "date": "2026-05-17",
+      "city": "Lisbon",
+      "activities": [
+        {"name": "Breakfast", "time": "07:30", "lat": 38.7109, "lng": -9.1396, "notes": "Keep it light; lots of walking today."},
+        {"name": "Travel to São Jorge Castle gate", "time": "08:30", "lat": 38.7122, "lng": -9.1336, "notes": "Uber/taxi or tram + short uphill walk. Arrive ~15–20 min before entry."},
+        {"name": "São Jorge Castle + viewpoints", "time": "09:00", "lat": 38.7139, "lng": -9.1334, "notes": "Plan ~1.5–2h. Buy tickets online to reduce queueing.", "url": "https://castelodesaojorge.pt/en/"},
+        {"name": "Miradouro / Largo Santa Luzia", "time": "11:00", "lat": 38.7116, "lng": -9.1303, "notes": "Quick stop for tiles + views (15–30 min)."},
+        {"name": "Museu de Artes Decorativas Portuguesas", "time": "11:30", "lat": 38.7119, "lng": -9.1319, "notes": "Largo das Portas do Sol. Aim ~45–75 min.", "url": "https://www.visitlisboa.com/en/places/museum-of-portuguese-decorative-arts"},
+        {"name": "Explore Alfama + lunch", "time": "12:30", "lat": 38.7127, "lng": -9.1330, "notes": "Wander downhill through Alfama; choose a lunch spot on the way.", "url": "https://www.ricksteves.com/europe/portugal/lisbon"},
+        {"name": "Baixa walking tour (Rossio → Comércio)", "time": "14:00", "lat": 38.7078, "lng": -9.1366, "notes": "2–3h at a relaxed pace. Optional: Elevador de Santa Justa if lines are manageable.", "url": "https://www.ricksteves.com/europe/portugal/lisbon"},
+        {"name": "Break / chill at lodging", "time": "17:00", "lat": 38.7109, "lng": -9.1396, "notes": "Reset, shower, short rest."},
+        {"name": "Dinner", "time": "19:00", "lat": 38.7109, "lng": -9.1396, "notes": "Consider booking for popular spots."}
+      ]
+    },
+    {
+      "date": "2026-05-18",
+      "city": "Lisbon",
+      "activities": [
+        {"name": "Breakfast", "time": "08:30", "lat": 38.7109, "lng": -9.1396, "notes": ""},
+        {"name": "Travel to Gulbenkian area", "time": "09:30", "lat": 38.7376, "lng": -9.1547, "notes": "Metro/taxi ~20–30 min depending on where you stay."},
+        {"name": "Gulbenkian (museum + gardens)", "time": "10:00", "lat": 38.7376, "lng": -9.1547, "notes": "Plan ~1.5–2h. Note: verify museum/gallery openings for May 2026 (some spaces may be closed for renovation).", "url": "https://gulbenkian.pt/museu/en/"},
+        {"name": "Travel to Parque das Nações", "time": "12:15", "lat": 38.7680, "lng": -9.0935, "notes": "Metro/taxi ~25–40 min."},
+        {"name": "Lunch at Parque das Nações", "time": "13:00", "lat": 38.7636, "lng": -9.0950, "notes": "Grab something along the riverfront or by the mall area."},
+        {"name": "Parque das Nações (river walk + Telecabine)", "time": "14:00", "lat": 38.7680, "lng": -9.0935, "notes": "Easy afternoon. Cable car + riverside stroll ~1.5–2h.", "url": "https://www.telecabinelisboa.pt/en_GB"},
+        {"name": "Travel back / downtime", "time": "16:30", "lat": 38.7109, "lng": -9.1396, "notes": ""},
+        {"name": "Dinner", "time": "19:00", "lat": 38.7109, "lng": -9.1396, "notes": ""}
+      ]
+    },
+    {
+      "date": "2026-05-19",
+      "city": "Sintra",
+      "activities": [
+        {"name": "Breakfast", "time": "06:30", "lat": 38.7142, "lng": -9.1402, "notes": "Early start helps with crowds and parking/taxi restrictions in Sintra."},
+        {"name": "Travel to Rossio station", "time": "07:00", "lat": 38.7142, "lng": -9.1402, "notes": "Arrive a bit early for tickets/platform."},
+        {"name": "Train Lisbon → Sintra", "time": "07:30", "lat": 38.7970, "lng": -9.3845, "notes": "Allow ~40 min plus buffer."},
+        {"name": "Transfer to Pena Palace (bus 434 / taxi)", "time": "08:30", "lat": 38.7877, "lng": -9.3903, "notes": "Traffic can be slow; timed entry strongly recommended."},
+        {"name": "Pena Palace (interior + terraces)", "time": "09:00", "lat": 38.7877, "lng": -9.3903, "notes": "Most visitors need ~2–3h including park transfers/queues—build buffer.", "url": "https://www.parquesdesintra.pt/en/wifi-landing-pages/park-and-palace-of-pena/"},
+        {"name": "Walk / transfer to Moorish Castle", "time": "11:45", "lat": 38.7950, "lng": -9.3872, "notes": "Short transfer; expect uneven paths."},
+        {"name": "Castelo dos Mouros (Moorish Castle)", "time": "12:00", "lat": 38.7950, "lng": -9.3872, "notes": "Plan ~60–90 min if you do the walls.", "url": "https://www.parquesdesintra.pt/en/parks-monuments/the-moorish-castle/"},
+        {"name": "Lunch in Sintra town", "time": "13:30", "lat": 38.7979, "lng": -9.3900, "notes": "Keep it efficient; queues can be long."},
+        {"name": "Quinta da Regaleira", "time": "14:30", "lat": 38.7964, "lng": -9.3963, "notes": "Many visitors spend ~3–4h. If you want dinner back in Lisbon, cap at ~2–2.5h and prioritize the Initiation Well + tunnels.", "url": "https://www.regaleira.pt/en"},
+        {"name": "Return Sintra → Lisbon", "time": "17:15", "lat": 38.7142, "lng": -9.1402, "notes": "Leave time to reach the station, wait, and travel (~1h+ door-to-door)."},
+        {"name": "Dinner in Lisbon", "time": "19:30", "lat": 38.7109, "lng": -9.1396, "notes": "If you prefer 18:30 dinner, either shorten Regaleira further or skip Moorish Castle."}
+      ]
+    },
+    {
+      "date": "2026-05-20",
+      "city": "Lisbon",
+      "activities": [
+        {"name": "Breakfast", "time": "07:30", "lat": 38.7109, "lng": -9.1396, "notes": ""},
+        {"name": "Vintage tram / viewpoints loop (flex morning)", "time": "09:00", "lat": 38.7139, "lng": -9.1334, "notes": "Rick Steves-style: pick a neighborhood walk + a couple viewpoints; keep it loose.", "url": "https://www.ricksteves.com/europe/portugal/lisbon"},
+        {"name": "Lunch", "time": "13:30", "lat": 38.7109, "lng": -9.1396, "notes": ""},
+        {"name": "Belém: Jerónimos Monastery + Pastéis", "time": "15:00", "lat": 38.6977, "lng": -9.2064, "notes": "Classic Lisbon half-day. If you hate lines, go earlier or reserve/ticket ahead.", "url": "https://www.ricksteves.com/europe/portugal/lisbon"},
+        {"name": "Chill / downtime", "time": "18:00", "lat": 38.7109, "lng": -9.1396, "notes": ""},
+        {"name": "Dinner", "time": "20:00", "lat": 38.7109, "lng": -9.1396, "notes": ""}
+      ]
+    },
+    {
+      "date": "2026-05-21",
+      "city": "Lisbon",
+      "activities": [
+        {"name": "Breakfast", "time": "08:00", "lat": 38.7109, "lng": -9.1396, "notes": ""},
+        {"name": "Chiado + Bairro Alto wandering walk", "time": "10:00", "lat": 38.7107, "lng": -9.1450, "notes": "Best-practice ‘wander’ day: keep a single anchor sight, then let the city lead.", "url": "https://www.ricksteves.com/europe/portugal/lisbon"},
+        {"name": "Time Out Market — lunch / snack", "time": "13:00", "lat": 38.7085, "lng": -9.1459, "notes": "Easy place to sample a bunch of things.", "url": "https://www.timeoutmarket.com/lisboa/en/"},
+        {"name": "Free time (shopping / nap / last Lisbon errands)", "time": "15:00", "lat": 38.7109, "lng": -9.1396, "notes": "Buffer before wedding weekend."},
+        {"name": "Dinner", "time": "19:30", "lat": 38.7109, "lng": -9.1396, "notes": ""}
+      ]
+    },
+    {
+      "date": "2026-05-22",
+      "city": "Estoril / Cascais",
+      "activities": [
+        {"name": "Move to Estoril (wedding weekend base)", "time": "10:30", "lat": 38.7037239, "lng": -9.394787, "notes": "Check in, drop bags, then head to the venue."},
+        {"name": "EVOLUTION Cascais-Estoril Hotel", "time": "11:00", "lat": 38.7037239, "lng": -9.394787, "notes": "Booked hotel for wedding days."},
+        {"name": "Haldi", "time": "12:00", "lat": 38.7025951, "lng": -9.3977734, "notes": "Forte da Cruz — 18 Rua Olivença, Estoril 2765-262.", "url": "https://www.google.com/maps/search/?api=1&query=Forte%20da%20Cruz%20Estoril"},
+        {"name": "Reset / outfit / buffer", "time": "15:00", "lat": 38.7037239, "lng": -9.394787, "notes": "Build in downtime so the evening feels easy."},
+        {"name": "Sangeet", "time": "19:00", "lat": 38.7025951, "lng": -9.3977734, "notes": "Forte da Cruz — same venue.", "url": "https://www.google.com/maps/search/?api=1&query=Forte%20da%20Cruz%20Estoril"}
+      ]
+    },
+    {
+      "date": "2026-05-23",
+      "city": "Cascais",
+      "activities": [
+        {"name": "Wedding Ceremony", "time": "12:30", "lat": 38.721731, "lng": -9.4784103, "notes": "Arriba — Estrada do Guincho, Cascais 2750-642.", "url": "https://www.google.com/maps/search/?api=1&query=Arriba%20Cascais%20Estrada%20do%20Guincho"},
+        {"name": "Break / rest", "time": "15:30", "lat": 38.7037239, "lng": -9.394787, "notes": "Back to the hotel; hydrate + reset."},
+        {"name": "Reception", "time": "19:00", "lat": 38.721731, "lng": -9.4784103, "notes": "Arriba — same venue.", "url": "https://www.google.com/maps/search/?api=1&query=Arriba%20Cascais%20Estrada%20do%20Guincho"}
+      ]
+    },
+    {
+      "date": "2026-05-24",
+      "city": "Travel",
+      "activities": [
+        {"name": "Transit to airport", "time": "12:00", "lat": 38.7742, "lng": -9.1342, "notes": "Allow extra buffer for weekend traffic + security."},
+        {"name": "Fly Lisbon (LIS) → New York (JFK)", "time": "17:00", "notes": "Return flight (TAP TP 209)."}
+      ]
+    }
+  ],
+  "hotels": []
+}
