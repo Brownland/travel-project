@@ -1,0 +1,19 @@
+---
+description: Data/source conventions: weather, maps, routing, restaurants, safe links
+alwaysApply: true
+---
+
+# Data sources + safety conventions
+
+- **Maps**: Leaflet + OSM tiles.
+- **Geocoding**: Nominatim (be gentle; cache where possible; set UA).
+- **Weather**: Open‑Meteo forecast; if outside horizon, show **historical reference** with year.
+- **Routing**: OSRM (free) via backend proxy endpoints; clear old routes on day changes.
+- **Restaurants**: Overpass API; explain source clearly in UI; keyword filtering + fallback queries.
+- **Safe links**:
+  - only render clickable links for `https://` URLs
+  - use `rel="noopener noreferrer"` + `target="_blank"`
+  - avoid embedding external sites; most block iframes and it bloats UI
+- **Persistence**:
+  - shared compendium/staging stored server-side (`data/*.json`)
+  - per-user UI state stored client-side (localStorage) when appropriate

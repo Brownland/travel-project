@@ -1,0 +1,25 @@
+---
+description: Repeatable workflows for collaboration, staging, and deploys
+alwaysApply: true
+---
+
+# Workflows (how we build features)
+
+## Adding items
+- Add suggestions via URL ingestion (`/api/bachelor-party/add`).
+- Auto-categorize activities; classify lodging; best-effort coordinates (site HTML → geocode fallback).
+- Keep items lightweight: name + short definition + link + coordinates.
+
+## Converging on an itinerary
+- Use **Shortlist** as the “wide table” of candidates.
+- Votes are **one per browser** (cookie-backed session id); sort by votes descending.
+- Drag from shortlist into the day plan; keep day picker scoped per destination.
+
+## Persistence rules
+- Shared: compendium + shortlist + votes in `data/bachelor_party.json`.
+- Local: per-user selections (active day, UI state) in localStorage.
+
+## Deployment (Koyeb)
+- Keep `Procfile` as source of truth for run command (Gunicorn + `$PORT`).
+- Pin Python via `.python-version`.
+- Revoke API tokens after deploy.

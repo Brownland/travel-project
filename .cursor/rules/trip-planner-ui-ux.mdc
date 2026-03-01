@@ -1,0 +1,17 @@
+---
+description: UI/UX + layout principles for the trip planner
+alwaysApply: true
+---
+
+# Trip planner UI/UX (dense, collaborative)
+
+- **Design goal**: fast scanning + low vertical waste; optimize for “many items”.
+- **Primary pattern**: *Saved/Library → Shortlist (ranked) → Itinerary* (Wanderlog-style flow).
+- **Shortlist**: horizontal “table” where **highest-voted items float to the front**; always draggable into itinerary.
+- **Controls**: keep actions compact (small buttons), prefer **search + filter + tabs** over separate bulky sections.
+- **Layout**:
+  - consolidate related info (e.g. **overview + weather**) into one card with columns
+  - avoid duplicate selectors; selection state must be **per destination**
+  - use wide container on this dashboard
+- **Accessibility**: maintain semantic headings, labels for inputs, and keyboard-focus styles for interactive elements.
+- **Performance**: paginate long libraries; keep DOM light (no embedded previews/iframes by default).
