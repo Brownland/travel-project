@@ -19,3 +19,5 @@ Thumbs.db
 .env
 data/flask_secret_key.txt
 
+
+.tools/
